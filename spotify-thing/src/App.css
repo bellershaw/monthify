@@ -14,25 +14,153 @@
 }
 
 .App-header {
+  padding-top:5vh;
   background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
+  min-height: 20vh;
+  display: grid;
+  width:100%;
   flex-direction: column;
-  align-items: center;
+  align-items: "safe center";
   justify-content: center;
   font-size: calc(10px + 2vmin);
+  color: #FFFFFF;
+  gap:0px;
+  padding-bottom: 0;
+}
+
+.App-description {
+  background-color: #17191e;
+  height: 100%;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 60%;
+  color:#FFFFFF;
+  margin-bottom:0;
+}
+
+.App-body {
+  background-image: linear-gradient(#3d105a, #c43c24);
+  background-color: #1db954;
+  min-height: 65vh;
+  display: flex;
+  flex-direction: column;
+  /*align-items: center;*/
+  justify-content: center;
+  font-size: calc(5px + 2vmin);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-footer {
+  background-color: #17191e;
+  background-image: linear-gradient(#282c34);
+  display: flex;
+  width:100vw;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(1px + 2vmin);
+  color:#FFFFFF;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.After-log{
+  display:grid;
+  grid-auto-flow:row;
+  align-content: center;
+  justify-content: center;
+}
+
+.Scroll-menu{
+  display:grid;
+  grid-auto-flow:column;
+  margin-top: 3vh;
+  margin-bottom: 5vh;
+}
+
+.Playlist-scroller{
+  -ms-overflow-style: none;
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns: 17%;
+  overflow-x:scroll;
+  overscroll-behavior-inline: contain;
+  position: relative;
+  background-color: #292b2f08;
+  gap:0;
+}
+
+.Playlist-image{
+  width: 27vh;
+  height: 27vh;
+  background-color: black;
+}
+
+.Scroll-button{
+  background-color: #9da0a76d;
+  margin-left: 1vw;
+  margin-right: 1vw;
+  font-size: 3vh;
+  border:none;
+}
+
+.Log-button {
+  background-color: #1db954;
+  border-radius: 100px;
+  height: calc(5vh + 10px);
+  width: fit-content;
+  padding:20px;
+  border: none;
+  color: #FFFFFF;
+  font-size: calc(3px + 2vmin);
+  margin:auto;
+  margin-bottom: 2vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.Social-icon{
+  color:#811fc3;
+  padding-left: .25vw;
+  padding-right: .25vw;
+}
+
+@media screen and (max-width: 600px){
+  .App-description{
+    font-size: calc(2px + 3vmin);
   }
-  to {
-    transform: rotate(360deg);
+  .App-footer{
+    font-size: 5vmin;
+  }
+
+  .Log-button{
+    font-size: 5vmin;
+  }
+
+  .Playlist-scroller{
+    gap:30vw;
+    margin-left: 2vw;
+    margin-right: 2vw;
+  }
+  .Scroll-button{
+    display: none;
+  }
+
+  .Playlist-image{
+    width: 20vh;
+    height: 20vh;
+  }
+}
+
+@media screen and (min-width: 601px){
+  .Playlist-scroller::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .Playlist-scroller {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
