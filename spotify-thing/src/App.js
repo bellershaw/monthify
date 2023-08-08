@@ -44,6 +44,60 @@ function App() {
   [token]
   );
 
+  async function makePlaylist(){
+
+    console.log("making playlist")
+    if(!hasRun){
+      sethasRun(true)
+      console.log(`token here: ${token}`)
+      let next = "https://api.spotify.com/v1/me/tracks?limit=50";
+      let data = ""
+      let last = lastMonth.setMonth(lastMonth.getMonth()+1)
+      while (!!next){
+        //console.log("inside while loop")
+        //console.log("next in loop: ", next)
+        data = await axios.get(next, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: {}
+        })
+
+        data = data.data;
+        next = data.next;
+
+        //console.log("data: ", data);
+        //console.log("data items:", data.items)
+
+        for (let i = 0; i < data.items.length; i++){
+          //console.log("in name search loop: ", i, " ", data.items[i].track.name)
+
+          let added_date = data.items[i].added_at
+          let added_year = parseInt(added_date.substring(0, 4))
+          let added_month = parseInt(added_date.substring(5, 7))
+
+          added_date = new Date(added_year, added_month)
+
+          //break if current date is before target date
+          if (firstMonth > added_date)
+            {
+              console.log("TRIGGERED")
+              next = null
+              break
+  
+            }
+
+         if (last > added_date && firstMonth <= added_date)
+            {
+              console.log("will add", data.items[i].track.name)
+  
+            }
+          }
+
+        }
+    }
+  }
+
   const get_auth = async () => {
     const {data} = await axios.get("https://accounts.spotify.com/authorize", {
       headers: {
@@ -73,6 +127,7 @@ function App() {
       behavior: 'smooth'
     });
   }
+
   //log out
   const logout = () => {
     setToken("")
@@ -90,47 +145,6 @@ function App() {
     })
 
     setUname(data.display_name)
-}
-
-const getliked = async (e) => {
-  console.log(grabbed)
-  if (grabbed == "0"){
-    setGrabbed("1")
-    console.log(grabbed)
-    console.log(`token here: ${token}`)
-    let next = "https://api.spotify.com/v1/me/tracks?limit=50";
-    let data = 'test'
-    while (!!next){
-      console.log("inside while loop")
-      console.log("next in loop: ", next)
-      data = await axios.get(next, {
-          headers: {
-              Authorization: `Bearer ${token}`
-          },
-          params: {}
-      })
-      data = data.data;
-      next = data.next;
-      console.log("data: ", data);
-      console.log("data items:", data.items)
-      for (let i = 0; i < data.items.length; i++){
-        console.log("in name search loop: ", i, " ", data.items[i].track.name)
-        if (data.items[i].track.name === "Out of Bounds")
-          {
-            console.log("found liked: ", data.items[i].id)
-            i = 999999999
-            break
-
-          }
-        }
-      console.log("playlist in loop: ", data.items)
-      console.log("next after loop", next)
-      }
-
-    console.log("setting playlists")
-    setPlaylists(data.items)
-    console.log("playlists: ", playlists)
-  }
 }
 
   return (
@@ -170,14 +184,14 @@ const getliked = async (e) => {
                 withPortal
                 />
               </h3>
-            <button className="Log-button" onClick={() => sethasRun(true)}>Make Playlists</button>
+            <button className="Log-button" onClick={() => makePlaylist()}>Make Playlists</button>
             </div>
             }
           </div>
           :
           <div className="After-log">
             <div className='Scroll-menu'>
-              <button id="clickLeft" type="button" className="Scroll-button" onClick={scrollLeft}>&lt;</button>
+              <button id="clickLeft" type="button" className="Scroll-button" onClick={() => scrollLeft}>&lt;</button>
               <div id="PlaylistScroller" className="Playlist-scroller">
                 <img className="Playlist-image" src="/doge.png"/>
                 <img className="Playlist-image" src="/doge.png"/>
@@ -189,7 +203,7 @@ const getliked = async (e) => {
                 <img className="Playlist-image" src="/doge.png"/>
                 <img className="Playlist-image" src="/doge.png"/>
               </div>
-              <button id="clickRight" type="button" className="Scroll-button" onClick={scrollRight}>&gt;</button>
+              <button id="clickRight" type="button" className="Scroll-button" onClick={() => scrollRight}>&gt;</button>
             </div>
             <button className="Log-button" onClick={() => sethasRun(false)}>Back</button>
           </div>
