@@ -71,6 +71,26 @@
   justify-content: center;
 }
 
+.Month-select{
+  margin-top: 5vh;
+  display:grid;
+  grid-auto-flow:row;
+  align-content: center;
+  justify-content: center;
+  background-color: #17191ec7;
+  height: 50vh;
+  width: 60vw;
+}
+
+.Month-label{
+  font-size: 2vh;
+}
+
+.Calendar{
+  margin-left: .25vw;
+  font-size: 16px;
+}
+
 .Scroll-menu{
   display:grid;
   grid-auto-flow:column;
@@ -114,13 +134,21 @@
   color: #FFFFFF;
   font-size: calc(3px + 2vmin);
   margin:auto;
+  margin-top: 2vh;
   margin-bottom: 2vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  text-decoration: none;
 }
 
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
 .Social-icon{
   color:#811fc3;
   padding-left: .25vw;
@@ -152,6 +180,11 @@
     width: 20vh;
     height: 20vh;
   }
+
+  .Month-select{
+    width: 80vw;
+  }
+  
 }
 
 @media screen and (min-width: 601px){
