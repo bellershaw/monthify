@@ -107,13 +107,17 @@
   overscroll-behavior-inline: contain;
   position: relative;
   background-color: #292b2f08;
-  gap:0;
+  gap:200px;
 }
 
 .Playlist-image{
   width: 27vh;
   height: 27vh;
+
   background-color: black;
+  animation: fadeInAnimation ease 5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
 
 .Scroll-button{
@@ -122,8 +126,17 @@
   margin-right: 1vw;
   font-size: 3vh;
   border:none;
+
 }
 
+@keyframes fadeInAnimation {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+   }
+}
 .Log-button {
   background-color: #1db954;
   border-radius: 100px;
