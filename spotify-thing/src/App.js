@@ -13,7 +13,9 @@ function App() {
 
   const [token, setToken] = useState("")
   const [uname, setUname] = useState("")
+  const [userID, setUserID] = useState("")
   const [playlists, setPlaylists] = useState("")
+  const [playlistIDs, setPlaylistIDs] = useState([])
   const [hasRun, sethasRun] = useState(false)
   const [grabbed, setGrabbed] = useState("0")
   const [firstMonth, setFirstMonth] = useState(new Date());
@@ -44,15 +46,42 @@ function App() {
   [token]
   );
 
+
+  async function addSongs(track_list, playlist_id){
+    console.log("adding tracklist", track_list)
+    console.log("to playlist", playlist_id)
+
+    let add_track_data = await axios.post(`https://api.spotify.com/v1/playlists/${playlist_id}/tracks`, {
+        "uris": track_list
+      },{
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+      }
+    )
+
+  }
+  
   async function makePlaylist(){
 
     console.log("making playlist")
     if(!hasRun){
+      let Months = ['January', 'February', 'March', 'April',
+                'May', 'June', 'July', 'August', 'September',
+                'October', 'November', 'December']
       sethasRun(true)
       console.log(`token here: ${token}`)
       let next = "https://api.spotify.com/v1/me/tracks?limit=50";
       let data = ""
-      let last = lastMonth.setMonth(lastMonth.getMonth()+1)
+      firstMonth.setHours(0,0,0)
+      lastMonth.setHours(23,59,59)
+      let current_month = (lastMonth.getMonth() + 1) % 12
+      let current_month_string = Months[lastMonth.getMonth()];
+      let playlist_id = ""
+      console.log(current_month, lastMonth.getFullYear())
+      //current_month = (current_month-1) % mod 12
+      let track_list = [];
       while (!!next){
         //console.log("inside while loop")
         //console.log("next in loop: ", next)
@@ -63,54 +92,110 @@ function App() {
             params: {}
         })
 
-        data = data.data;
-        next = data.next;
+        let track_data = data.data;
+        next = track_data.next;
 
         //console.log("data: ", data);
         //console.log("data items:", data.items)
 
-        for (let i = 0; i < data.items.length; i++){
+        for (let i = 0; i < track_data.items.length; i++){
           //console.log("in name search loop: ", i, " ", data.items[i].track.name)
 
-          let added_date = data.items[i].added_at
+          let added_date = track_data.items[i].added_at
           let added_year = parseInt(added_date.substring(0, 4))
           let added_month = parseInt(added_date.substring(5, 7))
 
-          added_date = new Date(added_year, added_month)
+          added_date = new Date(added_year, added_month-1)
 
           //break if current date is before target date
           if (firstMonth > added_date)
             {
+              console.log(firstMonth, added_date)
               console.log("TRIGGERED")
               next = null
+              if(track_list.length != 0){
+                addSongs(track_list, playlist_id)
+              }
               break
   
             }
 
-         if (last > added_date && firstMonth <= added_date)
+         if (lastMonth >= added_date && firstMonth <= added_date)
             {
-              console.log("will add", data.items[i].track.name)
-  
+
+              //if new month
+              if(current_month != added_date.getMonth()){ 
+                //make playlist
+                  current_month = added_date.getMonth()
+                  if(track_list.length != 0){
+                    console.log("adding ", track_list, " to ")
+                    addSongs(track_list, playlist_id)
+              
+                  }
+                  
+                  track_list = []
+                  console.log("current month:", Months[current_month])
+                  let playlist_name =  "Monthify " + Months[current_month] + " " + added_date.getFullYear()
+                  console.log("create playlist:", playlist_name);
+                  
+                  let playlist_data = await axios.post(`https://api.spotify.com/v1/users/${userID}/playlists`, {
+                    name: playlist_name,
+                    public: true
+                }, {
+                    headers: {
+                      'Authorization': `Bearer ${token}`,
+                      'Content-Type': 'application/json',
+                  }
+                }
+                )
+                
+                console.log("data here", playlist_data)
+                if (typeof data != "undefined"){
+                  playlist_id = playlist_data.data.id
+                  playlistIDs.push(playlist_id)
+                }
+                
+                track_list = []
+                
+                }
+                //console.log("will add", track_data.items[i].track.name, " to ", Months[current_month], added_date.getFullYear())
+                track_list.push(track_data.items[i].track.uri)
             }
           }
-
+          console.log("playlist id right here",playlist_id)
+          console.log("tracklist",track_list)
+          if(track_list.length!=0){
+          addSongs(track_list, playlist_id)
+          track_list = []
+          }
+          console.log(next)
+      }
+      //add playlist images
+      console.log(playlistIDs)
+      for (let i = 0; i < playlistIDs.length; i++){
+        let image_data = ""
+          do {
+            console.log("getting image from playlist", playlistIDs[i])
+            image_data = await axios.get(`https://api.spotify.com/v1/playlists/${playlistIDs[i]}/images`, {
+              headers: {
+                  Authorization: `Bearer ${token}`
+              },
+              params: {}
+          })
         }
+        while(image_data.data.length == 0);
+        console.log(image_data)
+        const playlist_gallery = document.getElementById("PlaylistScroller") 
+        console.log(image_data)
+        const playlist_image = document.createElement("IMG")
+        playlist_image.src = image_data.data[0].url
+        playlist_image.className = "Playlist-image"
+        playlist_gallery.append(playlist_image)
+        setPlaylistIDs([])
+      }
     }
   }
 
-  const get_auth = async () => {
-    const {data} = await axios.get("https://accounts.spotify.com/authorize", {
-      headers: {
-          client_id: CLIENT_ID,
-          scope: "user-library-read",
-          redirect_uri: REDIRECT_URI,
-          response_type: RESPONSE_TYPE
-      },
-      params: {}
-  })
-
-    setToken(data.data.access_token)
-  }
 
   const scrollRight = () => {
     document.getElementById('PlaylistScroller').scrollBy({
@@ -144,7 +229,9 @@ function App() {
         params: {}
     })
 
+    console.log("user id", data.id)
     setUname(data.display_name)
+    setUserID(data.id)
 }
 
   return (
@@ -160,7 +247,7 @@ function App() {
           ?
           <div className='After-log'>
             {!token
-            ?<a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=user-library-read`}><button className="Log-button">Login to Spotify </button></a>
+            ?<a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=user-library-read playlist-modify-public`}><button className="Log-button">Login to Spotify </button></a>
             :<div className="Month-select">
               <h2 className="Welcome">Hello, {uname}</h2>
               <h3 className="Month-label">First Month:
@@ -170,7 +257,7 @@ function App() {
                 selected={firstMonth}
                 showMonthYearPicker
                 dateFormat="MMMM yyyy"
-                onSelect={(date) => setFirstMonth(date)}
+                onSelect={(first_date) => setFirstMonth(first_date)}
                 withPortal
                 />
                 </h3>
@@ -180,7 +267,7 @@ function App() {
                 selected={lastMonth}
                 showMonthYearPicker
                 dateFormat="MMMM yyyy"
-                onSelect={(date) => setLastMonth(date)}
+                onSelect={(last_date) => setLastMonth(new Date(last_date.getFullYear(), last_date.getMonth() +1, 0))}
                 withPortal
                 />
               </h3>
@@ -193,15 +280,6 @@ function App() {
             <div className='Scroll-menu'>
               <button id="clickLeft" type="button" className="Scroll-button" onClick={() => scrollLeft}>&lt;</button>
               <div id="PlaylistScroller" className="Playlist-scroller">
-                <img className="Playlist-image" src="/doge.png"/>
-                <img className="Playlist-image" src="/doge.png"/>
-                <img className="Playlist-image" src="/doge.png"/>
-                <img className="Playlist-image" src="/doge.png"/>
-                <img className="Playlist-image" src="/doge.png"/>
-                <img className="Playlist-image" src="/doge.png"/>
-                <img className="Playlist-image" src="/doge.png"/>
-                <img className="Playlist-image" src="/doge.png"/>
-                <img className="Playlist-image" src="/doge.png"/>
               </div>
               <button id="clickRight" type="button" className="Scroll-button" onClick={() => scrollRight}>&gt;</button>
             </div>
