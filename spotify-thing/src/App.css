@@ -101,13 +101,13 @@
 .Playlist-scroller{
   -ms-overflow-style: none;
   display:grid;
+  width:85vw;
   grid-auto-flow:column;
   grid-auto-columns: 17%;
+  justify-content: flex-start;
   overflow-x:scroll;
   overscroll-behavior-inline: contain;
   position: relative;
-  background-color: #292b2f08;
-  gap:200px;
 }
 
 .Playlist-image{
@@ -118,8 +118,17 @@
   animation: fadeInAnimation ease 5s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
+  margin-right: 200px;
 }
 
+.Playlist-label{
+  width:27vh;
+  color:#ffffff;
+  font-size: calc(5px + 2vh);
+  margin-left:auto;
+  margin-right:auto;
+  
+}
 .Scroll-button{
   background-color: #9da0a76d;
   margin-left: 1vw;
@@ -194,6 +203,9 @@ a:visited {
     height: 20vh;
   }
 
+  .Playlist-label{
+    width: 20vh;
+  }
   .Month-select{
     width: 80vw;
   }

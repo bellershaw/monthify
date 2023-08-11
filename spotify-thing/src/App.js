@@ -1,10 +1,11 @@
 import './App.css';
-import {useEffect, useState} from 'react';
+import {React, useEffect, useState} from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faGithub, faLinkedin, faInstagram} from "@fortawesome/free-brands-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
 function App() {
   const CLIENT_ID = "e818c8d017e44f9ba18d50e657944669"
   const REDIRECT_URI = "http://localhost:3000"
@@ -14,10 +15,15 @@ function App() {
   const [token, setToken] = useState("")
   const [uname, setUname] = useState("")
   const [userID, setUserID] = useState("")
-  const [playlists, setPlaylists] = useState("")
-  const [playlistIDs, setPlaylistIDs] = useState([])
   const [hasRun, sethasRun] = useState(false)
-  const [grabbed, setGrabbed] = useState("0")
+
+  const [playlistIDs, setPlaylistIDs] = useState([])
+  const [playlistURLs, setPlaylistURLs] = useState([])
+  const [playlistLen, setPlaylistLen] = useState(0)
+  const [playlistNames, setPlaylistNames] = useState([] )
+  const [monthifyNames, setMonthifyNames] = useState([])
+  const [monthifyIDs, setMonthifyIDs] = useState([])
+
   const [firstMonth, setFirstMonth] = useState(new Date());
   const [lastMonth, setLastMonth] = useState(new Date());
 
@@ -40,18 +46,16 @@ function App() {
   useEffect(() => {
     if (token){
       getUname()
-      //getLiked()
     }
   }, 
   [token]
   );
 
-
   async function addSongs(track_list, playlist_id){
     console.log("adding tracklist", track_list)
     console.log("to playlist", playlist_id)
 
-    let add_track_data = await axios.post(`https://api.spotify.com/v1/playlists/${playlist_id}/tracks`, {
+    axios.post(`https://api.spotify.com/v1/playlists/${playlist_id}/tracks`, {
         "uris": track_list
       },{
           headers: {
@@ -66,6 +70,7 @@ function App() {
   async function makePlaylist(){
 
     console.log("making playlist")
+    getMonthifyNames()
     if(!hasRun){
       let Months = ['January', 'February', 'March', 'April',
                 'May', 'June', 'July', 'August', 'September',
@@ -77,7 +82,6 @@ function App() {
       firstMonth.setHours(0,0,0)
       lastMonth.setHours(23,59,59)
       let current_month = (lastMonth.getMonth() + 1) % 12
-      let current_month_string = Months[lastMonth.getMonth()];
       let playlist_id = ""
       console.log(current_month, lastMonth.getFullYear())
       //current_month = (current_month-1) % mod 12
@@ -135,7 +139,8 @@ function App() {
                   
                   track_list = []
                   console.log("current month:", Months[current_month])
-                  let playlist_name =  "Monthify " + Months[current_month] + " " + added_date.getFullYear()
+                  let playlist_name =  "Monthify " + Months[current_month] + " " + added_date.getFullYear() + String.fromCharCode(9)
+                  let test_name =  "Monthify " + Months[current_month] + " " + added_date.getFullYear()
                   console.log("create playlist:", playlist_name);
                   
                   let playlist_data = await axios.post(`https://api.spotify.com/v1/users/${userID}/playlists`, {
@@ -152,7 +157,33 @@ function App() {
                 console.log("data here", playlist_data)
                 if (typeof data != "undefined"){
                   playlist_id = playlist_data.data.id
+                  console.log("playlist_data", playlist_data)
+
+                  console.log("url", playlist_data.data.external_urls.spotify)
+                  console.log("is equal to",playlist_name === playlist_data.data.name)
+                  console.log("is equal to test",test_name === playlist_data.data.name)
+                  playlistURLs.push(playlist_data.data.external_urls.spotify)
                   playlistIDs.push(playlist_id)
+                  playlistNames.push(playlist_name)
+
+                  let tmp_id = ""
+                  let tmp_name = ""
+                  console.log(monthifyNames)
+                  for (let i = 0; i < monthifyNames.length; i++){
+                    if(monthifyNames[i] === playlist_name){
+                      console.log("deleting", monthifyNames[i], monthifyIDs[i])
+                      tmp_id = monthifyIDs[i]
+                      tmp_name = monthifyNames[i]
+                      let delete_data = await axios.delete(`https://api.spotify.com/v1/playlists/${monthifyIDs[i]}/followers`, {                        
+                        headers: {
+                        'Authorization': `Bearer ${token}`
+                    }}, {
+
+                    }
+                    )
+
+                    }
+                  }
                 }
                 
                 track_list = []
@@ -160,6 +191,7 @@ function App() {
                 }
                 //console.log("will add", track_data.items[i].track.name, " to ", Months[current_month], added_date.getFullYear())
                 track_list.push(track_data.items[i].track.uri)
+
             }
           }
           console.log("playlist id right here",playlist_id)
@@ -180,20 +212,38 @@ function App() {
               headers: {
                   Authorization: `Bearer ${token}`
               },
-              params: {}
           })
         }
         while(image_data.data.length == 0);
         console.log(image_data)
         const playlist_gallery = document.getElementById("PlaylistScroller") 
         console.log(image_data)
+
+        const playlist_link = document.createElement("a")
+        playlist_link.setAttribute("href", playlistURLs[i])
+        playlist_link.setAttribute("target", "_blank")
+
         const playlist_image = document.createElement("IMG")
         playlist_image.src = image_data.data[0].url
         playlist_image.className = "Playlist-image"
-        playlist_gallery.append(playlist_image)
-        setPlaylistIDs([])
+        playlist_link.append(playlist_image)
+
+        const playlist_label = document.createElement("h2")
+        playlist_label.innerHTML = playlistNames[i].substring(playlistNames[i].indexOf(" ") + 1, playlistNames[i].length - 1)
+        playlist_label.className = "Playlist-label"
+        playlist_link.append(playlist_label)
+
+        playlist_gallery.append(playlist_link)
       }
+      setPlaylistLen(playlistNames.length)
+      console.log("playlistlen", playlistLen)
+      setPlaylistIDs([])
+      setPlaylistURLs([])
+      setPlaylistNames([])
+      setMonthifyNames([])
+      setMonthifyIDs([])
     }
+
   }
 
 
@@ -220,7 +270,7 @@ function App() {
     window.localStorage.removeItem("token")
   }
   //get user's profile
-  const getUname = async (e) => {
+  async function getUname(){
     console.log(`token here: ${token}`)
     const {data} = await axios.get("https://api.spotify.com/v1/me", {
         headers: {
@@ -234,6 +284,29 @@ function App() {
     setUserID(data.id)
 }
 
+async function getMonthifyNames(){
+  let next = "https://api.spotify.com/v1/me/playlists?limit=50";
+  setMonthifyNames([])
+  while (!!next){
+    //console.log("inside while loop")
+    //console.log("next in loop: ", next)
+    let data = await axios.get(next, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+    })
+    next = data.data.next
+    console.log("playlist data while grabbing:", data)
+    for(let i = 0; i < data.data.items.length; i++){
+      if(data.data.items[i].name.includes("Monthify")){
+        monthifyNames.push(data.data.items[i].name)
+        monthifyIDs.push(data.data.items[i].id)
+      }
+    }
+}
+console.log("names", monthifyNames)
+console.log("ids", monthifyIDs)
+}
   return (
     <div className="App">
       <header className="App-header">
@@ -278,10 +351,16 @@ function App() {
           :
           <div className="After-log">
             <div className='Scroll-menu'>
-              <button id="clickLeft" type="button" className="Scroll-button" onClick={() => scrollLeft}>&lt;</button>
+              {(playlistLen > 6)
+              ? <button id="clickLeft" type="button" className="Scroll-button" onClick={scrollLeft}>&lt;</button> 
+              : <></>}
+              
               <div id="PlaylistScroller" className="Playlist-scroller">
               </div>
-              <button id="clickRight" type="button" className="Scroll-button" onClick={() => scrollRight}>&gt;</button>
+              {(playlistLen > 6)
+              ?<button id="clickRight" type="button" className="Scroll-button" onClick={scrollRight}>&gt;</button>
+              :<></>
+              }
             </div>
             <button className="Log-button" onClick={() => sethasRun(false)}>Back</button>
           </div>
