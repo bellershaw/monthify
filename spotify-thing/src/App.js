@@ -120,7 +120,6 @@ function App() {
               if(track_list.length != 0){
                 addSongs(track_list, playlist_id)
               }
-              break
   
             }
 
