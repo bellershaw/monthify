@@ -80,6 +80,7 @@ function App() {
       let next = "https://api.spotify.com/v1/me/tracks?limit=50";
       let data = ""
       firstMonth.setHours(0,0,0)
+      firstMonth.setDate(1)
       lastMonth.setHours(23,59,59)
       let current_month = (lastMonth.getMonth() + 1) % 12
       let playlist_id = ""
@@ -120,7 +121,7 @@ function App() {
               if(track_list.length != 0){
                 addSongs(track_list, playlist_id)
               }
-  
+              break
             }
 
          if (lastMonth >= added_date && firstMonth <= added_date)
