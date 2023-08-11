@@ -104,7 +104,7 @@
   width:85vw;
   grid-auto-flow:column;
   grid-auto-columns: 17%;
-  justify-content: flex-start;
+  justify-content: center;
   overflow-x:scroll;
   overscroll-behavior-inline: contain;
   position: relative;

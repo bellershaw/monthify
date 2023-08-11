@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   const CLIENT_ID = "e818c8d017e44f9ba18d50e657944669"
-  const REDIRECT_URI = "https://bellershaw.github.io/Monthify"
+  const REDIRECT_URI = "http://localhost:3000"
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
   const RESPONSE_TYPE = "token"
 
@@ -100,7 +100,7 @@ function App() {
         let track_data = data.data;
         next = track_data.next;
 
-        //console.log("data: ", data);
+        console.log("track data: ", track_data);
         //console.log("data items:", data.items)
 
         for (let i = 0; i < track_data.items.length; i++){
@@ -109,8 +109,9 @@ function App() {
           let added_date = track_data.items[i].added_at
           let added_year = parseInt(added_date.substring(0, 4))
           let added_month = parseInt(added_date.substring(5, 7))
+          let added_day = parseInt(added_date.substring(8,10))
 
-          added_date = new Date(added_year, added_month-1)
+          added_date = new Date(added_year, added_month-1, added_day)
 
           //break if current date is before target date
           if (firstMonth > added_date)
