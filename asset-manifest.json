@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Monthify/static/css/main.c9eeed12.css",
-    "main.js": "/Monthify/static/js/main.35d7d429.js",
-    "static/js/787.d9449368.chunk.js": "/Monthify/static/js/787.d9449368.chunk.js",
-    "index.html": "/Monthify/index.html",
-    "main.c9eeed12.css.map": "/Monthify/static/css/main.c9eeed12.css.map",
-    "main.35d7d429.js.map": "/Monthify/static/js/main.35d7d429.js.map",
-    "787.d9449368.chunk.js.map": "/Monthify/static/js/787.d9449368.chunk.js.map"
+    "main.css": "/monthify/static/css/main.c9eeed12.css",
+    "main.js": "/monthify/static/js/main.5cb2ac6c.js",
+    "static/js/787.d9449368.chunk.js": "/monthify/static/js/787.d9449368.chunk.js",
+    "index.html": "/monthify/index.html",
+    "main.c9eeed12.css.map": "/monthify/static/css/main.c9eeed12.css.map",
+    "main.5cb2ac6c.js.map": "/monthify/static/js/main.5cb2ac6c.js.map",
+    "787.d9449368.chunk.js.map": "/monthify/static/js/787.d9449368.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c9eeed12.css",
-    "static/js/main.35d7d429.js"
+    "static/js/main.5cb2ac6c.js"
   ]
 }
