@@ -1,6 +1,6 @@
 {
   "name": "spotify-thing",
-  "homepage": "https://bellershaw.github.io/Monthify",
+  "homepage": "https://bellershaw.github.io/monthify",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

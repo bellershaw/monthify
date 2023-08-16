@@ -8,8 +8,8 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   const CLIENT_ID = "e818c8d017e44f9ba18d50e657944669"
-  //const REDIRECT_URI = "https://bellershaw.github.io/Monthify/"
-  const REDIRECT_URI = "http://localhost:3000"
+  const REDIRECT_URI = "https://bellershaw.github.io/monthify"
+  //const REDIRECT_URI = "http://localhost:3000"
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
   const RESPONSE_TYPE = "token"
 
