@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   const CLIENT_ID = "e818c8d017e44f9ba18d50e657944669"
+  //const REDIRECT_URI = "https://bellershaw.github.io/Monthify/"
   const REDIRECT_URI = "http://localhost:3000"
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
   const RESPONSE_TYPE = "token"
@@ -121,6 +122,7 @@ function App() {
               next = null
               if(track_list.length != 0){
                 addSongs(track_list, playlist_id)
+                track_list = []
               }
               break
             }
@@ -135,6 +137,7 @@ function App() {
                   if(track_list.length != 0){
                     console.log("adding ", track_list, " to ")
                     addSongs(track_list, playlist_id)
+                    track_list = []
               
                   }
                   
