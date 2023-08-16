@@ -355,13 +355,13 @@ console.log("ids", monthifyIDs)
           :
           <div className="After-log">
             <div className='Scroll-menu'>
-              {(playlistLen > 6)
+              {(playlistLen > 4)
               ? <button id="clickLeft" type="button" className="Scroll-button" onClick={scrollLeft}>&lt;</button> 
               : <></>}
               
               <div id="PlaylistScroller" className="Playlist-scroller">
               </div>
-              {(playlistLen > 6)
+              {(playlistLen > 4)
               ?<button id="clickRight" type="button" className="Scroll-button" onClick={scrollRight}>&gt;</button>
               :<></>
               }
