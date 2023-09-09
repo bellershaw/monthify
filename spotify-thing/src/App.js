@@ -8,11 +8,9 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   const CLIENT_ID = "e818c8d017e44f9ba18d50e657944669"
-  const REDIRECT_URI = "https://bellershaw.github.io/monthify"
-  //const REDIRECT_URI = "http://localhost:3000"
-  const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
-  const RESPONSE_TYPE = "token"
-
+  //const REDIRECT_URI = "https://bellershaw.github.io/monthify"
+  const REDIRECT_URI = "http://localhost:3000"
+  const SCOPE = "playlist-read-private playlist-read-collaborative playlist-modify-public user-library-read"
   const [token, setToken] = useState("")
   const [uname, setUname] = useState("")
   const [userID, setUserID] = useState("")
@@ -28,20 +26,51 @@ function App() {
   const [firstMonth, setFirstMonth] = useState(new Date());
   const [lastMonth, setLastMonth] = useState(new Date());
 
+  
   //check for and extract access token after use logs in
   useEffect(() => {
-    const hash = window.location.hash
-    let token = window.localStorage.getItem("token")
+    console.log("in use")
+    const urlParams = new URLSearchParams(window.location.search);
+    let code = urlParams.get('code');
+    let token = window.localStorage.getItem("access_token")
   
-    if (!token && hash) {
-        token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
-  
-        window.location.hash = ""
-        window.localStorage.setItem("token", token)
-
+    if(token){
+      console.log("returning", token)
+      setToken(token)
+      return;
     }
-//
-    setToken(token)
+    if (code){
+      let codeVerifier = localStorage.getItem('code_verifier');
+      let body = new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: REDIRECT_URI,
+        client_id: CLIENT_ID,
+        code_verifier: codeVerifier
+      });
+
+      const response = fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: body
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('HTTP status ' + response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        localStorage.setItem('access_token', data.access_token);
+        setToken(data.access_token)
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
   }, [])
 
   useEffect(() => {
@@ -52,6 +81,52 @@ function App() {
   [token]
   );
 
+  function generateRandomString(length) {
+    let text = '';
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  
+    for (let i = 0; i < length; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
+  async function generateCodeChallenge(codeVerifier) {
+    function base64encode(string) {
+      return btoa(String.fromCharCode.apply(null, new Uint8Array(string)))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    }
+  
+    const encoder = new TextEncoder();
+    const data = encoder.encode(codeVerifier);
+    const digest = await window.crypto.subtle.digest('SHA-256', data);
+  
+    return base64encode(digest);
+  }
+
+  async function requestAuth(){
+  let codeVerifier = generateRandomString(128);
+
+  generateCodeChallenge(codeVerifier).then(codeChallenge => {
+    let state = generateRandomString(16);
+  
+    localStorage.setItem('code_verifier', codeVerifier);
+  
+    let args = new URLSearchParams({
+      response_type: 'code',
+      client_id: CLIENT_ID,
+      scope: SCOPE,
+      redirect_uri: REDIRECT_URI,
+      state: state,
+      code_challenge_method: 'S256',
+      code_challenge: codeChallenge
+    });
+  
+    window.location = 'https://accounts.spotify.com/authorize?' + args;
+  });
+  }
   async function addSongs(track_list, playlist_id){
     console.log("adding tracklist", track_list)
     console.log("to playlist", playlist_id)
@@ -271,7 +346,7 @@ function App() {
   const logout = () => {
     setToken("")
     setUname("")
-    window.localStorage.removeItem("token")
+    window.localStorage.removeItem("access_token")
   }
   //get user's profile
   async function getUname(){
@@ -324,7 +399,7 @@ console.log("ids", monthifyIDs)
           ?
           <div className='After-log'>
             {!token
-            ?<a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=user-library-read playlist-modify-public`}><button className="Log-button">Login to Spotify </button></a>
+            ?<button className="Log-button" onClick={() => requestAuth()}>Login to Spotify </button>
             :<div className="Month-select">
               <h2 className="Welcome">Hello, {uname}</h2>
               <h3 className="Month-label">First Month:
