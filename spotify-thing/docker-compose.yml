@@ -1,0 +1,16 @@
+# docker-compose.yml
+# docker compose up --build
+# localhost:3000
+version: "3.8"
+services:
+   frontend:
+     build:
+       context: .
+       dockerfile: Dockerfile
+     volumes:
+       - ./:/monthify:delegated
+       - ./src:/spotify-thing/src
+     ports:
+       - 3000:3000
+     environment:
+       - WATCHPACK_POLLING=true
