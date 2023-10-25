@@ -303,9 +303,15 @@ function App() {
         playlist_link.setAttribute("target", "_blank")
 
         const playlist_image = document.createElement("IMG")
-        playlist_image.src = image_data.data[0].url
+        //playlist_image.src = image_data.data[0].url
+        playlist_image.src ="%PUBLIC_URL%/doge.png"
         playlist_image.className = "Playlist-image"
         playlist_link.append(playlist_image)
+
+        const spotify_logo = document.createElement("IMG")
+        spotify_logo.src = "/doge.png"
+        spotify_logo.className = "Spotify-image"
+        playlist_link.append(spotify_logo)
 
         const playlist_label = document.createElement("h2")
         playlist_label.innerHTML = playlistNames[i].substring(playlistNames[i].indexOf(" ") + 1, playlistNames[i].length - 1)
