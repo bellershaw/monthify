@@ -2,10 +2,11 @@ import './App.css';
 import {React, useEffect, useState} from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faGithub, faLinkedin, faInstagram} from "@fortawesome/free-brands-svg-icons";
+import {faGithub, faLinkedin, faInstagram, faSpotify} from "@fortawesome/free-brands-svg-icons";
 import DatePicker from "react-datepicker";
+import moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
-
+import spotifyLogo from './spotify-logo.png'
 function App() {
   const CLIENT_ID = "e818c8d017e44f9ba18d50e657944669"
   //const REDIRECT_URI = "https://bellershaw.github.io/monthify"
@@ -302,15 +303,30 @@ function App() {
         playlist_link.setAttribute("href", playlistURLs[i])
         playlist_link.setAttribute("target", "_blank")
 
+        const image_div = document.createElement("div")
+        image_div.className = "Image-div"
+        playlist_link.appendChild(image_div)
+
         const playlist_image = document.createElement("IMG")
         playlist_image.src = image_data.data[0].url
         playlist_image.className = "Playlist-image"
-        playlist_link.append(playlist_image)
+        image_div.appendChild(playlist_image)
+
+        const spotify_logo = document.createElement("IMG")
+        spotify_logo.src=spotifyLogo
+        //let p_prime = p.cloneNode(true);
+        //playlist_link.appendChild(p_prime)
+        //spotify_logo.setAttribute("icon", "{faSpotify}")
+        spotify_logo.className = "Spotify-logo"
+        image_div.appendChild(spotify_logo)
+        //spotify_logo.setAttribute("style", "{{color:#1db954}}")
+        //spotify_logo.setAttribute("size", "2xl")
+        //playlist_link.insertAdjacentHTML('beforeend','<i class="fa-brands fa-spotify fa-2xl" style="color: #1f512b;"></i>')
 
         const playlist_label = document.createElement("h2")
         playlist_label.innerHTML = playlistNames[i].substring(playlistNames[i].indexOf(" ") + 1, playlistNames[i].length - 1)
         playlist_label.className = "Playlist-label"
-        playlist_link.append(playlist_label)
+        playlist_link.appendChild(playlist_label)
 
         playlist_gallery.append(playlist_link)
       }
@@ -409,6 +425,7 @@ console.log("ids", monthifyIDs)
                 selected={firstMonth}
                 showMonthYearPicker
                 dateFormat="MMMM yyyy"
+                maxDate={moment().toDate()}
                 onSelect={(first_date) => setFirstMonth(first_date)}
                 withPortal
                 />
@@ -419,6 +436,7 @@ console.log("ids", monthifyIDs)
                 selected={lastMonth}
                 showMonthYearPicker
                 dateFormat="MMMM yyyy"
+                maxDate={moment().toDate()}
                 onSelect={(last_date) => setLastMonth(new Date(last_date.getFullYear(), last_date.getMonth() +1, 0))}
                 withPortal
                 />

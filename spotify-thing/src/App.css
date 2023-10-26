@@ -130,6 +130,26 @@
   margin-right:auto;
   
 }
+
+.Image-div{
+  width: 27vh;
+  height: 27vh;
+  position: relative;
+}
+
+.Spotify-logo{
+  height:35%;
+  width:35%;
+  z-index: 3;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  display: block;
+  margin: auto; 
+}
 .Scroll-button{
   background-color: #9da0a76d;
   margin-left: 1vw;
@@ -177,6 +197,7 @@ a:visited {
   padding-left: .25vw;
   padding-right: .25vw;
 }
+
 
 @media screen and (max-width: 600px){
   .App-description{
