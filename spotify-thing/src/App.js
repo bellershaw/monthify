@@ -7,12 +7,15 @@ import DatePicker from "react-datepicker";
 import moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
 import spotifyLogo from './spotify-logo.png'
+import ScaleLoader from "react-spinners/ScaleLoader";
+
 function App() {
   const CLIENT_ID = "e818c8d017e44f9ba18d50e657944669"
-  //const REDIRECT_URI = "https://bellershaw.github.io/monthify"
-  const REDIRECT_URI = "http://localhost:3000"
+  const REDIRECT_URI = "https://bellershaw.github.io/monthify"
+  //const REDIRECT_URI = "http://localhost:3000"
   const SCOPE = "playlist-read-private playlist-read-collaborative playlist-modify-public user-library-read"
   const [token, setToken] = useState("")
+  const [loading, setLoading] = useState(true)
   const [uname, setUname] = useState("")
   const [userID, setUserID] = useState("")
   const [hasRun, sethasRun] = useState(false)
@@ -146,6 +149,7 @@ function App() {
   
   async function makePlaylist(){
 
+    setLoading(true)
     console.log("making playlist")
     getMonthifyNames()
     if(!hasRun){
@@ -271,7 +275,7 @@ function App() {
                 }
                 //console.log("will add", track_data.items[i].track.name, " to ", Months[current_month], added_date.getFullYear())
                 track_list.push(track_data.items[i].track.uri)
-
+                
             }
           }
           console.log("playlist id right here",playlist_id)
@@ -295,6 +299,7 @@ function App() {
           })
         }
         while(image_data.data.length == 0);
+        
         console.log(image_data)
         const playlist_gallery = document.getElementById("PlaylistScroller") 
         console.log(image_data)
@@ -329,7 +334,9 @@ function App() {
         playlist_link.appendChild(playlist_label)
 
         playlist_gallery.append(playlist_link)
+        setLoading(false)
       }
+      
       setPlaylistLen(playlistNames.length)
       console.log("playlistlen", playlistLen)
       setPlaylistIDs([])
@@ -406,6 +413,7 @@ console.log("ids", monthifyIDs)
     <div className="App">
       <header className="App-header">
       <h1>Monthify</h1>
+      
       <h2 className="App-description">
         {!uname ? `Create Monthly Playlists From Your Liked Songs${uname}` : <></>}
         </h2>
@@ -446,6 +454,14 @@ console.log("ids", monthifyIDs)
             }
           </div>
           :
+          <div>
+          {loading
+            ? <div>
+            <text>Creating Playlists</text> 
+            <ScaleLoader color="#FFFFFF" size={50}/>
+              </div>
+            :<></>
+          }
           <div className="After-log">
             <div className='Scroll-menu'>
               {(playlistLen > 4)
@@ -460,6 +476,7 @@ console.log("ids", monthifyIDs)
               }
             </div>
             <button className="Log-button" onClick={() => sethasRun(false)}>Back</button>
+          </div>
           </div>
           
         }
