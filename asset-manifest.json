@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/monthify/static/css/main.15d16358.css",
-    "main.js": "/monthify/static/js/main.a8679650.js",
+    "main.css": "/monthify/static/css/main.f885ae1c.css",
+    "main.js": "/monthify/static/js/main.a8b81b0c.js",
     "static/js/787.d9449368.chunk.js": "/monthify/static/js/787.d9449368.chunk.js",
-    "static/media/spotify-logo.png": "/monthify/static/media/spotify-logo.3a0f4653ad82ff75ce45.png",
+    "static/media/spotify-logo-full.png": "/monthify/static/media/spotify-logo-full.8eef091b1fba251ca310.png",
     "index.html": "/monthify/index.html",
-    "main.15d16358.css.map": "/monthify/static/css/main.15d16358.css.map",
-    "main.a8679650.js.map": "/monthify/static/js/main.a8679650.js.map",
+    "main.f885ae1c.css.map": "/monthify/static/css/main.f885ae1c.css.map",
+    "main.a8b81b0c.js.map": "/monthify/static/js/main.a8b81b0c.js.map",
     "787.d9449368.chunk.js.map": "/monthify/static/js/787.d9449368.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.15d16358.css",
-    "static/js/main.a8679650.js"
+    "static/css/main.f885ae1c.css",
+    "static/js/main.a8b81b0c.js"
   ]
 }
