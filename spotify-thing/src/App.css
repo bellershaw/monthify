@@ -128,27 +128,20 @@
   font-size: calc(5px + 2vh);
   margin-left:auto;
   margin-right:auto;
+  position: relative;
+  margin-top: 0;
   
 }
 
 .Image-div{
   width: 27vh;
-  height: 27vh;
-  position: relative;
+  display: block;
 }
 
 .Spotify-logo{
-  height:35%;
-  width:35%;
-  z-index: 3;
-  position: absolute;
+  width: 60%;
   left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
 
-  display: block;
-  margin: auto; 
 }
 .Scroll-button{
   background-color: #9da0a76d;

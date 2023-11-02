@@ -6,7 +6,7 @@ import {faGithub, faLinkedin, faInstagram, faSpotify} from "@fortawesome/free-br
 import DatePicker from "react-datepicker";
 import moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
-import spotifyLogo from './spotify-logo.png'
+import spotifyLogo from './spotify-logo-full.png'
 import ScaleLoader from "react-spinners/ScaleLoader";
 
 function App() {
@@ -312,26 +312,20 @@ function App() {
         image_div.className = "Image-div"
         playlist_link.appendChild(image_div)
 
+        const spotify_logo = document.createElement("IMG")
+        spotify_logo.src=spotifyLogo
+        spotify_logo.className = "Spotify-logo"
+        image_div.appendChild(spotify_logo)
+
         const playlist_image = document.createElement("IMG")
         playlist_image.src = image_data.data[0].url
         playlist_image.className = "Playlist-image"
         image_div.appendChild(playlist_image)
 
-        const spotify_logo = document.createElement("IMG")
-        spotify_logo.src=spotifyLogo
-        //let p_prime = p.cloneNode(true);
-        //playlist_link.appendChild(p_prime)
-        //spotify_logo.setAttribute("icon", "{faSpotify}")
-        spotify_logo.className = "Spotify-logo"
-        image_div.appendChild(spotify_logo)
-        //spotify_logo.setAttribute("style", "{{color:#1db954}}")
-        //spotify_logo.setAttribute("size", "2xl")
-        //playlist_link.insertAdjacentHTML('beforeend','<i class="fa-brands fa-spotify fa-2xl" style="color: #1f512b;"></i>')
-
         const playlist_label = document.createElement("h2")
         playlist_label.innerHTML = playlistNames[i].substring(playlistNames[i].indexOf(" ") + 1, playlistNames[i].length - 1)
         playlist_label.className = "Playlist-label"
-        playlist_link.appendChild(playlist_label)
+        image_div.appendChild(playlist_label)
 
         playlist_gallery.append(playlist_link)
         setLoading(false)
